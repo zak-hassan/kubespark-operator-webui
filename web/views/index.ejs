@@ -1,0 +1,113 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <link href="/dist/css/patternfly.min.css" rel="stylesheet">
+    <link href="/dist/css/patternfly-additions.min.css" rel="stylesheet">
+    <link href="/dist/css/react-bootstrap-table.css" rel="stylesheet">
+    <link href="/dist/css/main.css" rel="stylesheet">
+    <!-- JQUERY CDN -->
+    <script
+            src="https://code.jquery.com/jquery-3.2.1.min.js"
+            integrity="sha256-hwg4gsxgFZhOsEEamdOYGBf13FyQuiTwlAQgxVSNgt4="
+            crossorigin="anonymous"></script>
+    <meta charset="utf-8">
+    <meta content="width=device-width, initial-scale=1, shrink-to-fit=no" name="viewport">
+    <meta content="#000000" name="theme-color">
+    <title>Jiminy - Recommendations Report</title>
+</head>
+<body class="cards-pf">
+<div id="root">
+    <div class="app" data-reactroot="">
+        <nav class="navbar navbar-default navbar-pf navbar navbar-default" role="navigation">
+            <div class="container">
+                <div class="navbar-header">
+                    <button class="navbar-toggle collapsed" type="button"><span class="sr-only">Toggle navigation</span><span class="icon-bar"></span> <span class="icon-bar"></span><span class="icon-bar"></span></button><a class="navbar-brand" href="/"><label>Radanalytics Spark Mlib MovieRec</label></a>
+                </div>
+                <div class="navbar-collapse collapse">
+                    <ul class="navbar-nav navbar-primary nav navbar-nav">
+                        <li class="active" role="presentation">
+                            <a href="/">Clusters</a>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+        </nav><span></span>
+        <div class="col col-cards-pf container-cards-pf fader">
+            <div class="cards col-xs-10 col-md-8">
+                <div class="card-pf card-pf-accented">
+                    <h2 class="card-pf-title">Spark Clusters</h2>
+                    <div class="card-pf-footer">
+                        <form class="form-horizontal" role="form">
+                            <p class="fields-status-pf">All fields are required.</p>
+                            <div class="form-group">
+
+
+                                <div class="col-sm-8">
+                                    <div>
+                                        <label> Cluster Name: </label>
+                                        <input class="form-control" type="text" name="clustername"><br>
+                                        <label> Number of Workers: </label><br>
+                                        <input class="form-control" type="text" name="numworkers"><br>
+                                        <label> Spark Image Url: </label><br>
+                                        <input class="form-control" type="text" name="imgurl"><br>
+                                        <label> Metrics:</label><br>
+                                        <select class="form-control" id="sparkmetrics" name="sparkmetrics">
+                                            <option  selected="selected">
+                                                prometheus
+                                            </option>
+                                            <option>
+                                                jolokia
+                                            </option>
+                                        </select>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <div class="col-sm-offset-2 col-sm-10">
+                                    <button class="btn btn-default" type="submit" onclick="displayReport()">Submit</button>
+                                </div>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div><!-- react-empty: 40 -->
+    </div>
+</div>
+<script>
+$('form').submit(false);
+var displayReport= function(){
+var userId= $("#userRating").val();
+
+ $.get("/api/predictor/"+userId,
+        function(data, status){
+			var conf={ columns: data.columns,
+		            data: data.dataSet,
+		            dom: "t",
+		            order: [[ 0, 'asc' ]],
+		            pfConfig: {
+		              filterCaseInsensitive: true,
+		              paginationSelector: "#pagination1",
+		              colvisMenuSelector: '.table-view-pf-colvis-menu'
+		            },
+		         };
+		    var table= $("#table1").DataTable(conf);
+    });
+};
+</script>
+<div id="tableSpace">
+    <div class="col col-cards-pf container-cards-pf fader">
+        <div class="cards col-xs-10 col-md-8">
+            <div className="card-pf card-pf-accented">
+                <h2 className="card-pf-title"> Recommended products for user </h2>
+                    <div className="card-pf-footer">
+                         <table class="table table-striped table-bordered table-hover" id="table1"/>
+                    </div>
+            </div>
+        </div>
+    </div>
+</div>
+<script src="/dist/main.js"></script>
+<noscript>You need to enable JavaScript to run this app.</noscript>
+</body>
+</html>
